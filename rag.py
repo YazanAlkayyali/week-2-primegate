@@ -10,3 +10,5 @@ client = QdrantClient(
 )
 
 print(client.get_collections())
+info = client.get_collection("tea_reviews")
+print(info)
