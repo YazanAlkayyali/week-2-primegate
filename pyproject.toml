@@ -7,7 +7,9 @@ authors = [
     { name = "yazank", email = "yazank105@gmail.com" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "qdrant-client>=1.19.0",
+]
 
 [project.scripts]
 week-2-primegate = "week_2_primegate:main"
