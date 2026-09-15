@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "chonkie[qdrant,st]>=1.7.0",
     "pandas>=3.0.5",
     "python-dotenv>=1.2.3",
     "qdrant-client[fastembed]>=1.19.0",

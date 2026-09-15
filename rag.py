@@ -1,38 +1,41 @@
 import os
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
+from chonkie import QdrantHandshake, SemanticChunker
 
 load_dotenv()
+
 
 client = QdrantClient(
     url=os.getenv("QDRANT_URL"),
     api_key=os.getenv("QDRANT_API_KEY"),
 )
 
-def chunk_text(text, chunk_size=200, overlap=50):
-    if len(text)<=chunk_size:
-        return [text]
-    chunks=[]
-    start=0
-    while start<len(text):
-        end= start + chunk_size
-        chunks.append(text[start:end])
-        start += chunk_size - overlap
-    return chunks
+print(client.get_collections())
 
-COLLECTION="tea_reviews"
-MODEL="sentence-transformers/all-MiniLM-L6-v2"
+if client.collection_exists("tea_reviews"):
+    client.delete_collection("tea_reviews")
+    print("Deleted old 'tea_reviews' collection.")
 
-df = pd.read_csv("data/tea_reviews.csv")
-df = df.dropna(subset=["review_text"])
+COLLECTION = "entre_ch1"
+MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
+with open("data/entre_ch1.txt", "r", encoding="utf-8") as f:
+    full_text = f.read()
 
-#docs = [
-#    "Qdrant has a LangChain integration for chatbots.",
-#    "Qdrant has a LlamaIndex integration for agents.",
-#]
-#metadata = [
-#    {"source": "langchain-docs"},
-#    {"source": "llamaindex-docs"},
-#]
-#   ids = [42, 2]
+handshake = QdrantHandshake(
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_API_KEY"),
+    collection_name=COLLECTION,
+    embedding_model=MODEL,
+)
+
+chunker = SemanticChunker()
+chunks = chunker.chunk(full_text)
+
+handshake.write(chunks)
+
+print(f"Chunked and stored {len(chunks)} chunks into '{COLLECTION}'.")
+
+info = client.get_collection(COLLECTION)
+print(f"Collection now has {info.points_count} points.")
