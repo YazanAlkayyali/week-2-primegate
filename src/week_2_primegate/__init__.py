@@ -1,2 +1,2 @@
-def main() -> None:
-    print("Hello from week-2-primegate!")
+from .agent import chat
+from .ai_config import API_KEY
