@@ -5,17 +5,10 @@ from chonkie import QdrantHandshake, SemanticChunker
 
 load_dotenv()
 
-
 client = QdrantClient(
     url=os.getenv("QDRANT_URL"),
     api_key=os.getenv("QDRANT_API_KEY"),
 )
-
-print(client.get_collections())
-
-if client.collection_exists("tea_reviews"):
-    client.delete_collection("tea_reviews")
-    print("Deleted old 'tea_reviews' collection.")
 
 COLLECTION = "entre_ch1"
 MODEL = "sentence-transformers/all-MiniLM-L6-v2"
